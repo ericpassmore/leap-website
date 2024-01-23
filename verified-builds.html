@@ -7,11 +7,7 @@ table, th, td {
 }
     </style>
     <script>
-function copyToClip(copyId) {
-  var copyText = document.getElementById(copyId);
-  copyText.select(); copyText.setSelectionRange(0, 99999);
-  navigator.clipboard.writeText(copyText.value);
-}
+
     </script>
   </head>
   <body>
@@ -23,7 +19,7 @@ function copyToClip(copyId) {
           <th>Git Commit</th>
           <th>Deb Checksum</th>
           <th>PR Num</th>
-          <th>PR Title</th>
+          <th>Title</th>
           <th>Deb Package</th>
           <th>Signature</th>
         </tr>
@@ -31,5 +27,37 @@ function copyToClip(copyId) {
       <tbody id="history">
       </tbody>
     </table>
+    <script type="module">
+    const reqHeaders = new Headers();
+    reqHeaders.append("Accept", "application/json");
+    const response = await fetch("/leap/leap-verified-builds.json",
+      {
+        method: "GET",
+        headers: reqHeaders,
+      }
+    );
+
+    const dataObj = await response.json();
+    var str = ''
+
+    if (dataObj != undefined) {
+      dataObj.forEach(function(record) {
+        str += '<tr>'
+        str += '<td>'+record['merge-time']+'</td>'
+        str += '<td>'+record['branch']+'</td>'
+        str += '<td>'+record['git-short-sha']+'</td>'
+        str += '<td><input type="text" id="chsum" name="chsum" value="'+record['full-checksum']+'"></td>'
+        str += '<td>'+record['pr-number']+'</td>'
+        str += '<td>'+record['title']+'</td>'
+        str += '<td><a href="'+record['download-url']+'">'+record['deb-file-name']+'</td>'
+        str += '<td><a href="/leap/signatures/'+record['git-short-sha']+'.asc">Signature</td>'
+        str += '</tr>'
+      });
+    } else {
+      str = '<tr><td>NO DATA</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>'
+    }
+
+    document.getElementById("history").innerHTML = str;
+    </script>
   </body>
 </html>

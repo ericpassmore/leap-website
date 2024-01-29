@@ -18,8 +18,9 @@ table, th, td {
           <th>Branch</th>
           <th>Git Commit</th>
           <th>Deb Checksum</th>
-          <th>PR Num</th>
+          <th>Last PR</th>
           <th>Title</th>
+          <th>Release Notes</th>
           <th>Deb Package</th>
           <th>Signature</th>
         </tr>
@@ -49,6 +50,11 @@ table, th, td {
         str += '<td><input type="text" id="chsum" name="chsum" value="'+record['full-checksum']+'"></td>'
         str += '<td>'+record['pr-number']+'</td>'
         str += '<td>'+record['title']+'</td>'
+        if ('release-notes' in record) {
+          str += '<td><a href="/leap/release_notes/'+record['git-short-sha']+'.html">Release Notes</td>'
+        } else {
+          str += '<td>No Notes</td>'
+        }
         str += '<td><a href="'+record['download-url']+'">'+record['deb-file-name']+'</td>'
         str += '<td><a href="/leap/signatures/'+record['git-short-sha']+'.asc">Signature</td>'
         str += '</tr>'
